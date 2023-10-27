@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Editar Negocio</title>
+</head>
+
+<body>
+    <h1>Editar Negocio</h1>
+    <form id="editBusinessForm">
+        <label for="businessName">Nombre del Negocio:</label>
+        <input type="text" id="businessName" required><br>
+
+        <label for="businessAddress">Dirección del Negocio:</label>
+        <input type="text" id="businessAddress" required><br>
+
+        <label for="businessContact">Contacto (Número):</label>
+        <input type="tel" id="businessContact" required><br>
+
+        <label for="businessCategory">Categoría:</label>
+        <select id="businessCategory" required>
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="Comercio">Comercio</option>
+            <option value="Comida">Comida</option>
+            <option value="Servicio">Servicio</option>
+            <option value="Hospedaje">Hospedaje</option>
+            <option value="Educación">Educación</option>
+            <option value="Entretenimiento">Entretenimiento</option>
+            <option value="Turismo">Turismo</option>
+        </select><br>
+
+        <label for="businessDescription">Descripción:</label>
+        <textarea id="businessDescription" required></textarea><br>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase using your configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAGuScqFmoyWXeKwGIIIJXedWJ7Jgr6zY",
+            authDomain: "mi-negocio-paracho.firebaseapp.com",
+            projectId: "mi-negocio-paracho",
+            storageBucket: "mi-negocio-paracho.appspot.com",
+            messagingSenderId: "955033168243",
+            appId: "1:955033168243:web:54611f1c3f12306aa63d06",
+            measurementId: "G-D8CC4HPH2Y"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.firestore();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const businessId = urlParams.get('id');
+
+        const editBusinessForm = document.getElementById('editBusinessForm');
+
+        // Function to fetch and display business details for editing
+        function displayBusinessDetails() {
+            const businessName = document.getElementById('businessName');
+            const businessAddress = document.getElementById('businessAddress');
+            const businessContact = document.getElementById('businessContact');
+            const businessCategory = document.getElementById('businessCategory');
+            const businessDescription = document.getElementById('businessDescription');
+
+            db.collection('businesses').doc(businessId).get().then((doc) => {
+                if (doc.exists) {
+                    const business = doc.data();
+                    businessName.value = business.name;
+                    businessAddress.value = business.address;
+                    businessContact.value = business.contact;
+                    businessCategory.value = business.category;
+                    businessDescription.value = business.description;
+                } else {
+                    console.log('No such document!');
+                }
+            });
+        }
+
+        // Function to update the business details
+        function updateBusinessDetails(event) {
+            event.preventDefault();
+
+            const updatedBusiness = {
+                name: document.getElementById('businessName').value,
+                address: document.getElementById('businessAddress').value,
+                contact: document.getElementById('businessContact').value,
+                category: document.getElementById('businessCategory').value,
+                description: document.getElementById('businessDescription').value
+            };
+
+            db.collection('businesses').doc(businessId).update(updatedBusiness)
+                .then(() => {
+                    alert('Negocio actualizado con éxito');
+                    window.location.href = 'TablaDatos.html';  // Redirect to your main page
+                })
+                .catch((error) => {
+                    console.error('Error al actualizar el negocio: ', error);
+                    alert('Hubo un error al actualizar el negocio');
+                });
+        }
+
+        editBusinessForm.addEventListener('submit', updateBusinessDetails);
+
+        // Display business details for editing when the page loads
+        displayBusinessDetails();
+    </script>
+</body>
+
+</html>

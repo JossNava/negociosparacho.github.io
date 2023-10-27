@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/jquery-3.3.1.slim.min.js">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+</head>
+
+<style>
+    .border-md {
+        border-width: 2px;
+    }
+
+    .btn-facebook {
+        background: #405D9D;
+        border: none;
+    }
+
+    .btn-facebook:hover,
+    .btn-facebook:focus {
+        background: #314879;
+    }
+
+    .btn-twitter {
+        background: #42AEEC;
+        border: none;
+    }
+
+    .btn-twitter:hover,
+    .btn-twitter:focus {
+        background: #1799e4;
+    }
+
+    body {
+        min-height: 100vh;
+    }
+
+    .form-control:not(select) {
+        padding: 1.5rem 0.5rem;
+    }
+
+    select.form-control {
+        height: 52px;
+        padding-left: 0.5rem;
+    }
+
+    .form-control::placeholder {
+        color: #ccc;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+    }
+
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+    }
+
+    .loading-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .file-input-wrapper {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .file-input-wrapper input[type="file"] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-input-button {
+        border: 2px solid rgb(255, 162, 0);
+        color: rgb(255, 162, 0);
+        padding: 10px 20px;
+        background-color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        height: 10vh;
+        border-style: dashed;
+    }
+
+    .file-input-button:hover {
+        background-color: #0056b3;
+    }
+
+    .file-input-icon {
+        margin-right: 10px;
+    }
+
+    #Upload {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0px;
+        padding-right: 15px;
+        border-radius: 3px;
+        padding-left: 15px;
+    }
+
+    @media screen and (max-width: 560px) {
+
+        .pt-5,
+        .py-5 {
+            padding-top: 0 !important;
+        }
+
+        .h1,
+        h1 {
+            font-size: 2.0rem !;
+
+        }
+    }
+</style>
+
+<body>
+    <!-- Navbar-->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light py-3">
+
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <div class="row py-5 mt-4 align-items-center">
+            <!-- For Demo Purpose -->
+            <div class="col-md-5 pr-lg-5 mb-5 mb-md-0">
+                <img src="https://i.postimg.cc/dVg67hDY/1697936688652.png" alt=""
+                    class="img-fluid mb-3 d-none d-md-block">
+                <h1 style="font-weight: bold;">Agrega tu negocio!</h1>
+                <p class="font-italic text-muted mb-0">Agrega tu negocio para que las todas las personas de Paracho
+                    Michoacan puedan encontrar mas facil tu negocio.</p>
+                <!--<p class="font-italic text-muted">Snippet By <a href="https://bootstrapious.com" class="text-muted">
+                        <u>Bootstrapious</u></a>
+                </p>-->
+            </div>
+
+            <!-- Registeration Form -->
+            <!-- Agrega un div para mostrar notificaciones -->
+            <div id="notification" class="alert" style="display: none;"></div>
+
+
+
+            <div class="col-md-7 col-lg-6 ml-auto">
+                <form action="#" id="businessForm">
+                    <div class="row">
+
+                        <!-- First Name -->
+                        <div class="input-group col-lg-6 mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                                    <i class="fab fas fa-store"></i>
+                                </span>
+                            </div>
+                            <input id="businessName" type="text" name="firstname" placeholder="Nombre del Negocio"
+                                class="form-control bg-white border-left-0 border-md" maxlength="30" required>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="input-group col-lg-6 mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                                    <i class="fa fa-map-marker text-muted"></i>
+                                </span>
+                            </div>
+                            <input id="businessAddress" type="text" name="lastname" placeholder="Dirección del Negocio"
+                                class="form-control bg-white border-left-0 border-md" maxlength="70" required>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="input-group col-lg-12 mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                                    <i class="fa fa-align-justify text-muted"></i>
+                                </span>
+                            </div>
+                            <input id="businessDescription" type="text" name="email" placeholder="Descripción"
+                                class="form-control bg-white border-left-0 border-md" required>
+                        </div>
+
+
+                        <!-- Phone Number -->
+                        <div class="input-group col-lg-12 mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                                    <i class="fa fa-phone-square text-muted"></i>
+                                </span>
+                            </div>
+                            <select id="countryCode" name="countryCode" style="max-width: 80px"
+                                class="custom-select form-control bg-white border-left-0 border-md h-100 font-weight-bold text-muted">
+                                <option value="">+52</option>
+
+                            </select>
+                            <input id="businessContact" type="tel" name="phone" placeholder="Contacto (Número)"
+                                class="form-control bg-white border-md border-left-0 pl-3" required minlength="10"
+                                maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+                        </div>
+                        <div class="input-group col-lg-12 mb-4" id="Upload">
+                            <div class="file-input-wrapper"
+                                style="display: inline-block; position: relative; overflow: hidden; cursor: pointer; width: 100%;">
+                                <input type="file" id="businessPhotos" accept="image/*" multiple required
+                                    onchange="updateUploadButton()" style="width: 100%;height: 100%;">
+                                <button class="file-input-button">
+                                    <i class="fas fa-image file-input-icon"></i> Seleccionar Imagen del negocio
+                                    (800x500)
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!-- Job -->
+                        <div class="input-group col-lg-12 mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                                    <i class="fa fa-question text-muted"></i>
+                                </span>
+                            </div>
+                            <select id="businessCategory" name="jobtitle"
+                                class="form-control custom-select bg-white border-left-0 border-md" required>
+                                <option value="">Selecciona una categoría</option>
+                                <option value="Comercio">Comercio</option>
+                                <option value="Comida">Comida</option>
+                                <option value="Servicio">Servicio</option>
+                                <option value="Hospedaje">Hospedaje</option>
+                                <option value="Educación">Educación</option>
+                                <option value="Entretenimiento">Entretenimiento</option>
+                                <option value="Turismo">Turismo</option>
+                            </select>
+                        </div>
+
+
+                        <!-- Submit Button -->
+                        <div class="form-group col-lg-12 mx-auto mb-0" type="submit">
+                            <button type="submit" class="btn btn-primary btn-block py-2"
+                                style="border: none; width: 100%;">
+                                <span class="font-weight-bold">Agregar Negocio</span>
+                            </button>
+
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto mb-0" style="margin-top: 10px;">
+                            <button class="btn btn-primary btn-block py-2"
+                                style="border: none; width: 100%;background-color: rgb(255, 179, 1); color: black;"
+                                onclick="window.location.href='index.html'">
+                                <span class="font-weight-bold"><i class="fab fas fa-chevron-left" style="margin: 5px;"></i>Regresar</span>
+                            </button>
+                        </div>
+
+
+
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-message">Subiendo tu negocio...</div>
+    </div>
+
+
+
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-storage.js"></script>
+
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDAGuScqFmoyWXeKwGIIIJXedWJ7Jgr6zY",
+        authDomain: "mi-negocio-paracho.firebaseapp.com",
+        projectId: "mi-negocio-paracho",
+        storageBucket: "mi-negocio-paracho.appspot.com",
+        messagingSenderId: "955033168243",
+        appId: "1:955033168243:web:54611f1c3f12306aa63d06",
+        measurementId: "G-D8CC4HPH2Y"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Función para mostrar la capa de carga
+    function showLoadingOverlay() {
+        const overlay = document.getElementById('loading-overlay');
+        overlay.style.display = 'block';
+    }
+
+    // Función para ocultar la capa de carga
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('loading-overlay');
+        overlay.style.display = 'none';
+    }
+
+    document.getElementById('businessForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        showLoadingOverlay(); // Muestra la capa de carga
+
+        var businessName = document.getElementById('businessName').value;
+        var businessAddress = document.getElementById('businessAddress').value;
+        var businessContact = document.getElementById('businessContact').value;
+        var businessCategory = document.getElementById('businessCategory').value;
+        var businessDescription = document.getElementById('businessDescription').value;
+        var businessPhotos = document.getElementById('businessPhotos').files;
+
+        var photosPromises = [];
+        for (var i = 0; i < businessPhotos.length; i++) {
+            var photoFile = businessPhotos[i];
+            var storageRef = storage.ref('business_photos/' + businessName + '/' + photoFile.name);
+            photosPromises.push(storageRef.put(photoFile));
+        }
+
+        Promise.all(photosPromises).then(function (results) {
+            var photoUrls = [];
+            results.forEach(function (result) {
+                photoUrls.push(result.ref.getDownloadURL());
+            });
+
+            Promise.all(photoUrls).then(function (downloadUrls) {
+                db.collection('businesses').add({
+                    name: businessName,
+                    address: businessAddress,
+                    contact: businessContact,
+                    category: businessCategory,
+                    description: businessDescription,
+                    photos: downloadUrls
+                })
+                    .then(function (docRef) {
+                        console.log('Negocio registrado con ID: ', docRef.id);
+                        alert('Negocio registrado con éxito');
+                    })
+                    .catch(function (error) {
+                        console.error('Error al registrar el negocio: ', error);
+                        alert('Hubo un error al registrar el negocio');
+                    })
+                    .finally(function () {
+                        hideLoadingOverlay(); // Oculta la capa de carga después de completar la operación
+                    });
+            });
+        });
+    });
+</script>
+<script>
+    function updateUploadButton() {
+        const uploadInput = document.getElementById('businessPhotos');
+        const uploadButton = document.querySelector('.file-input-button');
+
+        if (uploadInput.files.length > 0) {
+            uploadButton.innerHTML = '<i class="fas fa-image file-input-icon"></i> ' + uploadInput.files[0].name;
+        } else {
+            uploadButton.innerHTML = '<i class="fas fa-image file-input-icon"></i> Seleccionar Imagen del negocio (800x500)';
+        }
+    }
+</script>
+<script>
+    window.onload = function () {
+        // Restablece el formulario al cargarse la página
+        document.getElementById('businessForm').reset();
+    };
+</script>
+<script>
+    document.getElementById('businessForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Aquí se envían los datos a Firebase
+
+        // Restablecer el formulario
+        document.getElementById('businessForm').reset();
+
+        // Restablecer el texto del botón
+        const uploadButton = document.querySelector('.file-input-button');
+        uploadButton.innerHTML = '<i class="fas fa-image file-input-icon"></i> Seleccionar Imagen del negocio (800x500)';
+    });
+</script>
+<script>
+    function updateUploadButton() {
+        const uploadInput = document.getElementById('businessPhotos');
+        const uploadButton = document.querySelector('.file-input-button');
+
+        if (uploadInput.files.length > 0) {
+            const file = uploadInput.files[0];
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+
+            if (file.size <= 1024 * 1024) { // Tamaño máximo de 1 MB en bytes
+                img.onload = function () {
+                    if (img.width === 800 && img.height === 500) {
+                        uploadButton.innerHTML = '<i class="fas fa-image file-input-icon"></i> ' + file.name;
+                    } else {
+                        alert('Por favor, selecciona una imagen de 800x500 píxeles.');
+                        uploadInput.value = ''; // Borrar el archivo seleccionado
+                        uploadButton.innerHTML = '<i class="fas fa-image file-input-icon"></i> Seleccionar Imagen del negocio (800x500)';
+                    }
+                };
+            } else {
+                alert('El archivo seleccionado supera el tamaño máximo permitido de 1 MB.');
+                uploadInput.value = ''; // Borrar el archivo seleccionado
+                uploadButton.innerHTML = '<i class="fas fa-image file-input-icon"></i> Seleccionar Imagen del negocio (800x500)';
+            }
+        }
+    }
+</script>
+
+
+
+
+
+
+<script>
+    // For Demo Purpose [Changing input group text on focus]
+    $(function () {
+        $('input, select').on('focus', function () {
+            $(this).parent().find('.input-group-text').css('border-color', '#80bdff');
+        });
+        $('input, select').on('blur', function () {
+            $(this).parent().find('.input-group-text').css('border-color', '#ced4da');
+        });
+    });
+
+</script>
+
+
+</html>

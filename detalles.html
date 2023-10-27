@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Detalles de negocio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous" />
+</head>
+<style>
+  .img-item {
+    margin: 5px !important;
+  }
+
+  .product-content {
+    padding: 0rem 1rem !important;
+  }
+
+  /* Estilos para el botón flotante */
+  .floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 999;
+  }
+
+  /* Estilos para mostrar el popup */
+  .show-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    /* Un valor alto para asegurarse de que esté por encima de otros elementos */
+  }
+
+  /* Estilos para ocultar el popup */
+  .hide-popup {
+    display: none;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<body>
+  <div class="floating-button" id="openMap">🌍 Mapa de Paracho</div>
+
+  <!-- Contenedor del popup -->
+  <div class="popup hide-popup" id="mapPopup">
+    <div class="close-button" id="closeMap">Cerrar</div>
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3757.483063697938!2d-102.10086148465413!3d19.273547556669383!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842ebf4f7d89c1b3%3A0x1a2a3c2e1df47c19!2sParacho%2C%20Michoac%C3%A1n!5e0!3m2!1sen!2smx!4v1557382345285!5e0!3m2!1sen!2smx"
+      width="100%" height="100%"></iframe>
+  </div>
+
+
+
+  <div class="card-wrapper">
+    <div class="card">
+      <!-- card left -->
+      <div class="product-imgs">
+
+        <div class="img-select">
+          <!--<div class="img-item">
+            <a href="#" data-id="1">
+              <img src="{Contenido de imagen de firebase}" alt="shoe image">
+            </a>
+          </div>
+          <div class="img-item">
+            <a href="#" data-id="2">
+              <img src="shoes_images/shoe_2.jpg" alt="shoe image">
+            </a>
+          </div>
+          <div class="img-item">
+            <a href="#" data-id="3">
+              <img src="shoes_images/shoe_3.jpg" alt="shoe image">
+            </a>
+          </div>
+          <div class="img-item">
+            <a href="#" data-id="4">
+              <img src="shoes_images/shoe_4.jpg" alt="shoe image">
+            </a>
+          </div>-->
+        </div>
+      </div>
+      <!-- card right -->
+      <div class="product-content" style="margin-bottom: 0px;">
+        <h2 class="product-title" id="businessName"></h2>
+        <a href="#" class="product-link" id="businessCategory"></a>
+        <div class="product-detail">
+          <h2>Descripción del negocio: </h2>
+          <p id="businessDescription"></p>
+
+          <ul>
+            <li>Direccion: <span id="businessAddress">{Contenido de Direccion}</span></li>
+            <li>Telefono: <span id="businessContact">{Contenido de telefonon}</span></li>
+
+          </ul>
+        </div>
+
+        <div class="purchase-info">
+          <a id="" href="index.html">
+            <button type=" button" class="btn" style="background-color: rgb(255, 179, 1); color: black;"><i
+                class="fab fas fa-chevron-left"></i> Regresar</button></a>
+          <a id="whatsappLink"">
+            <button type=" button" class="btn" style="background-color: rgb(3, 192, 3);"><i
+              class="fab fa-whatsapp"></i> Mandar Mensaje</button></a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+
+  <script>
+    // Tu configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAGuScqFmoyWXeKwGIIIJXedWJ7Jgr6zY",
+      authDomain: "mi-negocio-paracho.firebaseapp.com",
+      projectId: "mi-negocio-paracho",
+      storageBucket: "mi-negocio-paracho.appspot.com",
+      messagingSenderId: "955033168243",
+      appId: "1:955033168243:web:54611f1c3f12306aa63d06",
+      measurementId: "G-D8CC4HPH2Y"
+    };
+
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Obtén el ID del negocio de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const businessId = urlParams.get('id');
+
+    if (businessId) {
+      // Accede al documento del negocio en Firestore
+      const businessRef = db.collection('businesses').doc(businessId);
+      businessRef.get().then((doc) => {
+        if (doc.exists) {
+          const businessData = doc.data();
+
+          // Llena los campos con los datos del negocio
+          document.getElementById('businessName').innerText = businessData.name;
+          document.getElementById('businessCategory').innerText = businessData.category;
+          document.getElementById('businessDescription').innerText = businessData.description;
+          document.getElementById('businessAddress').innerText = businessData.address;
+          document.getElementById('businessContact').innerText = businessData.contact;
+
+          // Llena las imágenes
+          const imgShowcase = document.querySelector('.img-showcase');
+          const imgSelect = document.querySelector('.img-select');
+          businessData.photos.forEach((photoUrl, index) => {
+            const imgItem = document.createElement('div');
+            imgItem.className = 'img-item';
+            imgItem.innerHTML = `<a href="#" data-id="${index}"><img src="${photoUrl}" alt="shoe image"></a>`;
+            imgSelect.appendChild(imgItem);
+            if (index === 0) {
+              imgShowcase.innerHTML = `<img src="${photoUrl}" alt="shoe image">`;
+            }
+          });
+
+          // Botón para mandar mensaje por WhatsApp
+          const whatsappLink = document.getElementById('whatsappLink');
+          whatsappLink.href = `https://api.whatsapp.com/send?phone=+52${encodeURIComponent(businessData.contact)}&text=Hola%2C+me+interesa+tu+negocio.`;
+        } else {
+          console.log('No se encontró el negocio');
+        }
+      }).catch((error) => {
+        console.error('Error al obtener los detalles del negocio:', error);
+      });
+    } else {
+      console.log('No se proporcionó un ID de negocio en la URL');
+    }
+
+    // Función para volver a la página anterior
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const whatsappButton = document.getElementById('whatsappLink');
+      whatsappButton.addEventListener('click', () => {
+        const businessContactElement = document.getElementById('businessContact');
+        const businessContact = businessContactElement.innerText;
+
+        // Verifica si ya tiene el prefijo +52
+        const isPrefixed = businessContact.startsWith('+52');
+        const encodedContact = isPrefixed ? encodeURIComponent(businessContact) : encodeURIComponent('+52' + businessContact);
+
+        const whatsappUrl = `https://api.whatsapp.com/send?phone=${encodedContact}&text=Hola%2C+me+interesa+tu+negocio.`;
+        window.location.href = whatsappUrl;
+      });
+    });
+
+
+  </script>
+  <script>
+    document.getElementById("openMap").addEventListener("click", function () {
+      document.getElementById("mapPopup").classList.remove("hide-popup");
+      document.getElementById("mapPopup").classList.add("show-popup");
+    });
+
+    document.getElementById("closeMap").addEventListener("click", function () {
+      document.getElementById("mapPopup").classList.remove("show-popup");
+      document.getElementById("mapPopup").classList.add("hide-popup");
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+
+</html>

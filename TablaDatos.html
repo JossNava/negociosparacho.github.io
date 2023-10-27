@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <title>Administración de Negocios</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #256eff;
+    }
+
+    th {
+        background-color: #256eff;
+        color: #fff;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+        th {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<body>
+    <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
+        <div class="mdc-top-app-bar__row">
+            <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                <span class="mdc-top-app-bar__title">Negocios Registrados</span>
+            </section>
+        </div>
+    </header>
+    <main class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell--span-12">
+                <table class="mdc-data-table">
+                    <thead>
+                        <tr>
+                            <th class="mdc-data-table__header-cell">Nombre</th>
+                            <th class="mdc-data-table__header-cell">Dirección</th>
+                            <th class="mdc-data-table__header-cell">Contacto</th>
+                            <th class="mdc-data-table__header-cell">Categoría</th>
+                            <th class="mdc-data-table__header-cell">Descripción</th>
+                            <th class="mdc-data-table__header-cell">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="businessList">
+                        <tr>
+                            <td class="mdc-data-table__cell">Nombre del Negocio 1</td>
+                            <td class="mdc-data-table__cell">Dirección 1</td>
+                            <td class="mdc-data-table__cell">Contacto 1</td>
+                            <td class="mdc-data-table__cell">Categoría 1</td>
+                            <td class="mdc-data-table__cell">Descripción 1</td>
+                            <td class="mdc-data-table__cell">
+                                <a href="#"><i class="fas fa-edit"></i></a>
+                                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <!-- Agrega más filas aquí -->
+                    </tbody>
+                </table>
+
+                <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+                <script>
+                    // Initialize Firebase using your configuration
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyDAGuScqFmoyWXeKwGIIIJXedWJ7Jgr6zY",
+                        authDomain: "mi-negocio-paracho.firebaseapp.com",
+                        projectId: "mi-negocio-paracho",
+                        storageBucket: "mi-negocio-paracho.appspot.com",
+                        messagingSenderId: "955033168243",
+                        appId: "1:955033168243:web:54611f1c3f12306aa63d06",
+                        measurementId: "G-D8CC4HPH2Y"
+                    };
+                    firebase.initializeApp(firebaseConfig);
+
+                    const db = firebase.firestore();
+
+                    // Function to fetch and display businesses
+                    function displayBusinesses() {
+                        const businessList = document.getElementById('businessList');
+
+                        db.collection('businesses').get().then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                const business = doc.data();
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+            <td>${business.name}</td>
+            <td>${business.address}</td>
+            <td>${business.contact}</td>
+            <td>${business.category}</td>
+            <td>${business.description}</td>
+            <td>
+              <button onclick="editBusiness('${doc.id}')">Editar</button>
+              <button onclick="deleteBusiness('${doc.id}')">Eliminar</button>
+            </td>
+          `;
+                                businessList.appendChild(row);
+                            });
+                        });
+                    }
+
+                    // Function to edit a business
+                    function editBusiness(businessId) {
+                        window.location.href = `editar.html?id=${businessId}`;
+                    }
+
+                    // Function to delete a business
+                    function deleteBusiness(businessId) {
+                        db.collection('businesses').doc(businessId).delete()
+                            .then(() => {
+                                console.log('Negocio eliminado correctamente.');
+                                // Remove the row from the table on successful deletion
+                                const rowToRemove = document.querySelector(`tr[data-id="${businessId}"]`);
+                                if (rowToRemove) {
+                                    rowToRemove.remove();
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error al eliminar el negocio:', error);
+                            });
+                    }
+
+                    // Display businesses when the page loads
+                    displayBusinesses();
+                </script>
+</body>
+
+</html>
