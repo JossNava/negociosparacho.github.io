@@ -16,6 +16,9 @@
     - custom css link
   -->
   <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous" />
 
   <!-- 
     - google font link
@@ -73,12 +76,25 @@
     height: 100%;
   }
 
-  .navbar-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  .product-card .card-badge.blue {
+    background: blue;
+    color: var(--white);
+    position: absolute;
+    top: 26px;
+    left: 0;
+    font-size: var(--fs-9);
+    font-weight: var(--fw-500);
+    padding: 0px 6px
   }
+
+  #icon {
+    padding: 4px;
+
+  }
+  .navbar-top {
+
+  margin-bottom: 0px;
+}
 </style>
 
 <body>
@@ -117,8 +133,8 @@
 
       <div class="navbar-top">
 
-        <a href="#" class="logo">
-          <img src="" alt="Menu de opciónes" width="130" height="31" style="color: dodgerblue;">
+        <a class="logo">
+          <img src="https://i.postimg.cc/QC7gknfp/IMG-20231027-010317.png" alt="Menu de opciónes" width="130" height="31" style="margin-left: -35px;">
         </a>
 
         <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
@@ -199,7 +215,7 @@
 
             <li class="service-item">
               <div class="service-item-icon">
-                <img src="./assets/images/Shop.svg" alt="Service icon" style="height: 8vh;">
+                <img src="./assets/images/Shop.svg" alt="Service icon" style="height: 7vh;">
               </div>
 
               <div class="service-content">
@@ -215,7 +231,7 @@
               </div>
 
               <div class="service-content">
-                <p class="service-item-title">Busacas un negocio?</p>
+                <p class="service-item-title">Buscas un negocio?</p>
 
                 <p class="service-item-text">Encuentra el más cercano</p>
               </div>
@@ -275,39 +291,46 @@
               function loadBusinesses() {
                 const businessList = document.getElementById('businessList');
 
-                db.collection('businesses').get().then((querySnapshot) => {
+                // Obtener todos los negocios ordenados por `position` de forma descendente
+                db.collection('businesses').orderBy('position', 'desc').get().then((querySnapshot) => {
                   querySnapshot.forEach((doc) => {
                     const businessData = doc.data();
-
-                    // Crear la estructura HTML para cada negocio
-                    const businessCard = document.createElement('li');
-                    businessCard.innerHTML = `
-        <div class="product-card">
-          <figure class="card-banner">
-            <a href="#">
-              <img src="${businessData.photos[0]}" alt="${businessData.name}" loading="lazy" width="800" height="1034" class="w-100">
-            </a>
-            <div class="card-badge red">${businessData.category}</div>
-            <div class="card-actions">
-              <button class="card-action-btn" aria-label="Quick view">
-                <ion-icon name="eye-outline"></ion-icon>
-              </button>
-              <a href="detalles.html?id=${doc.id}" class="card-action-btn cart-btn">
-                <p>Ver Negocio</p>
-              </a>
-            </div>
-          </figure>
-          <div class="card-content">
-            <h3 class="h4 card-title">
-              <a href="#" style="text-align: center;">${businessData.name}</a>
-            </h3>
-          </div>
-        </div>
-      `;
-
-                    businessList.appendChild(businessCard);
+                    renderBusinessCard(businessData, doc.id); // Pasar también el id del documento
                   });
                 });
+              }
+
+              // Función para renderizar la tarjeta de negocio
+              // Función para renderizar la tarjeta de negocio
+              function renderBusinessCard(businessData, docId) {
+                const businessList = document.getElementById('businessList');
+                // Crear la estructura HTML para cada negocio
+                const businessCard = document.createElement('li');
+                businessCard.innerHTML = `
+<div class="product-card">
+  <figure class="card-banner">
+    <a href="detalles.html?id=${docId}">
+      <img src="${businessData.photos[0]}" alt="${businessData.name}" loading="lazy" width="800" height="1034" class="w-100">
+    </a>
+    <div class="card-badge red">${businessData.category}</div>
+    ${businessData.position === 1 ? `<div class="card-badge blue"><i class="fas fa-fire" id="icon"></i>Promocionado</div>` : ''}
+    <div class="card-actions">
+      <button class="card-action-btn" aria-label="Quick view">
+        <ion-icon name="eye-outline"></ion-icon>
+      </button>
+      <a href="detalles.html?id=${docId}" class="card-action-btn cart-btn"> <!-- Usar el id pasado como argumento -->
+        <p>Ver Negocio</p>
+      </a>
+    </div>
+  </figure>
+  <div class="card-content">
+    <h3 class="h4 card-title">
+      <a href="detalles.html?id=${docId}" style="text-align: center;">${businessData.name}</a>
+    </h3>
+  </div>
+</div>
+`;
+                businessList.appendChild(businessCard);
               }
 
               // Llama a la función para cargar los negocios
